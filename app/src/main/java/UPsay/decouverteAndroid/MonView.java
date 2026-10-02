@@ -1,6 +1,8 @@
 package UPsay.decouverteAndroid;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -33,6 +35,11 @@ public class MonView extends View {
         p.setTextAlign(android.graphics.Paint.Align.CENTER);
         /* dessiner le texte au centre du View */
         String texte = "Bonjour MONDE";
-        canvas.drawText(texte, getWidth() / 2, getHeight() / 2, p);
+        canvas.drawText(texte, getWidth() / 2, getHeight() / 4, p);
+        /* charger l'image emoji.png depuis le dossier drawable */
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.formulaone);
+        if (b != null) {
+            canvas.drawBitmap(b, getWidth() / 2 - b.getWidth() / 2, getHeight() / 2 - b.getHeight() / 2, p);
+        }
     }
 }
