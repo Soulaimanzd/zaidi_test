@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void dessiner(android.view.View view) {
-        TextView editText = (TextView) findViewById(R.id.monTexte);
-        editText.setText("see youuu brooo");
+        setContentView(R.layout.gestionaire2);
     }
 }
+
