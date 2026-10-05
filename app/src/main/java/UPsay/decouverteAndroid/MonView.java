@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,6 +18,7 @@ import android.os.Handler;
 public class MonView extends View {
     int compteur = 0;
     float xText, yText;
+    float x1, y1, x2, y2;
     public MonView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setXYText(600, 600);
@@ -69,9 +71,38 @@ public class MonView extends View {
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        xText = event.getX();
-        yText = event.getY();
+        float dx, dy;
+        String direction;
+        switch (event.getAction()) {
+            case (MotionEvent.ACTION_DOWN):
+                x1 = event.getX();
+                y1 = event.getY();
+                Log.i("pacman", "appuyé");
+                break;
+
+            case (MotionEvent.ACTION_UP): {
+                x2 = event.getX();
+                y2 = event.getY();
+                dx = x2 - x1;
+                dy = y2 - y1;
+                // Utiliser dx et dy pour déterminer la direction
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 0)
+                        direction = "right";
+                    else
+                        direction = "left";
+                } else {
+                    if (dy > 0)
+                        direction = "down";
+                    else
+                        direction = "up";
+                }
+                Log.i("pacman", "lâché " + direction);
+                Log.i("pacman", "dx = " + dx + "; dy = " + dy);
+                break;
+            }
+        }
         invalidate();
-        return false;
+        return true;
     }
 }
