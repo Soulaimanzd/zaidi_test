@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,8 +16,10 @@ import android.os.Handler;
 
 public class MonView extends View {
     int compteur = 0;
+    float xText, yText;
     public MonView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setXYText(600, 600);
 
         // Timer : rappelle onDraw toutes les 100 ms
         final Handler handler = new Handler();
@@ -30,7 +33,11 @@ public class MonView extends View {
         handler.postDelayed(runnable, 100);
     }
 
-    @Override
+
+    public void setXYText(float x, float y) {
+        xText = x;
+        yText = y;
+    }
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         Paint p = new Paint();
@@ -48,7 +55,7 @@ public class MonView extends View {
         p.setTextAlign(android.graphics.Paint.Align.CENTER);
         /* dessiner le texte au centre du View */
         String texte = "Bonjour MONDE";
-        canvas.drawText(texte, getWidth() / 2, getHeight() / 4, p);
+        canvas.drawText(texte, xText, yText, p);
         /* charger l'image emoji.png depuis le dossier drawable */
         Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.formulaone);
         if (b != null) {
@@ -59,5 +66,12 @@ public class MonView extends View {
         p.setTextSize(60);
         canvas.drawText("Compteur : " + compteur, getWidth() / 2, getHeight() - 100, p);
         compteur = compteur + 1;
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        xText = event.getX();
+        yText = event.getY();
+        invalidate();
+        return false;
     }
 }
