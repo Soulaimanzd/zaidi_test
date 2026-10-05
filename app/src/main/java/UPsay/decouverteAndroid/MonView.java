@@ -11,10 +11,23 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.os.Handler;
 
 public class MonView extends View {
+    int compteur = 0;
     public MonView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        // Timer : rappelle onDraw toutes les 100 ms
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                invalidate();                    // redessine la vue (rappelle onDraw)
+                handler.postDelayed(this, 100);  // se relance dans 100 ms
+            }
+        };
+        handler.postDelayed(runnable, 100);
     }
 
     @Override
@@ -41,5 +54,10 @@ public class MonView extends View {
         if (b != null) {
             canvas.drawBitmap(b, getWidth() / 2 - b.getWidth() / 2, getHeight() / 2 - b.getHeight() / 2, p);
         }
+        /* afficher et faire avancer le compteur */
+        p.setColor(Color.YELLOW);
+        p.setTextSize(60);
+        canvas.drawText("Compteur : " + compteur, getWidth() / 2, getHeight() - 100, p);
+        compteur = compteur + 1;
     }
 }
