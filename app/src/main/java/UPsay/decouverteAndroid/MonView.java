@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,11 +21,30 @@ import android.os.Handler;
 
 public class MonView extends View {
     int compteur = 0;
+    private int pencheH, pencheV, penche;
     float xText, yText;
     float x1, y1, x2, y2;
     public MonView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setXYText(600, 600);
+        /* accelerometre */
+        Sensor accelerometre;
+        SensorManager m = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        accelerometre = m.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        SensorEventListener mSensorEventListener = new SensorEventListener() {
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                // Que faire en cas d'évènement sur le capteur ?
+                pencheH = -(int)(sensorEvent.values[0]);
+                pencheV = (int)(sensorEvent.values[1]);
+                penche = pencheH * pencheH + pencheV * pencheV;
+            }
+        };
+        m.registerListener(mSensorEventListener, accelerometre, SensorManager.SENSOR_DELAY_UI);
 
         // Timer : rappelle onDraw toutes les 100 ms
         final Handler handler = new Handler();
@@ -68,6 +91,9 @@ public class MonView extends View {
         p.setTextSize(60);
         canvas.drawText("Compteur : " + compteur, getWidth() / 2, getHeight() - 100, p);
         compteur = compteur + 1;
+        p.setColor(Color.CYAN);
+        p.setTextSize(50);
+        canvas.drawText("Penche H: " + pencheH + "  V: " + pencheV, getWidth() / 2, 150, p);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
